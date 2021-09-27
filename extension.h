@@ -24,8 +24,8 @@
 
 #include <string>
 #include <curl/curl.h>
-#include <jansson.h>
 #include <sm_stringhashmap.h>
+#include "IJsonus.h"
 #include <stdlib.h>
 #include <string.h>
 #include <uv.h>
@@ -72,30 +72,12 @@ struct CurlContext {
 
 struct HTTPResponse {
 	long status = 0;
-	json_t *data = NULL;
+	IJsonus *data = NULL;
 	Handle_t hndlData = BAD_HANDLE;
 	HTTPHeaderMap headers;
 
 	char *body = NULL;
 	size_t size = 0;
-};
-
-struct JSONObjectKeys {
-	JSONObjectKeys(json_t *object) : object(object), iter(json_object_iter(object)) {}
-
-	const char *GetKey()
-	{
-		return json_object_iter_key(iter);
-	}
-
-	void Next()
-	{
-		iter = json_object_iter_next(object, iter);
-	}
-
-private:
-	json_t *object;
-	void *iter;
 };
 
 
@@ -125,7 +107,7 @@ public:
 	 * @brief This is called once all known extensions have been loaded.
 	 * Note: It is is a good idea to add natives here, if any are provided.
 	 */
-	//virtual void SDK_OnAllLoaded();
+	virtual void SDK_OnAllLoaded();
 
 	/**
 	 * @brief Called when the pause state is changed.
@@ -139,7 +121,7 @@ public:
 	 * @param maxlength	Size of error message buffer.
 	 * @return			True if working, false otherwise.
 	 */
-	//virtual bool QueryRunning(char *error, size_t maxlength);
+	virtual bool QueryRunning(char *error, size_t maxlength);
 public:
 #if defined SMEXT_CONF_METAMOD
 	/**
@@ -197,13 +179,7 @@ public:
 	void OnHandleDestroy(HandleType_t type, void *object);
 };
 
-class JSONHandler : public IHandleTypeDispatch
-{
-public:
-	void OnHandleDestroy(HandleType_t type, void *object);
-};
-
-class JSONObjectKeysHandler : public IHandleTypeDispatch
+class JsonusHandler : public IHandleTypeDispatch
 {
 public:
 	void OnHandleDestroy(HandleType_t type, void *object);
@@ -220,13 +196,9 @@ extern HandleType_t			htHTTPRequest;
 extern HTTPResponseHandler	g_HTTPResponseHandler;
 extern HandleType_t				htHTTPResponse;
 
-extern JSONHandler	g_JSONHandler;
-extern HandleType_t		htJSON;
-
-extern JSONObjectKeysHandler	g_JSONObjectKeysHandler;
-extern HandleType_t				htJSONObjectKeys;
+extern HandleType_t			htJsonus;
+extern JsonusHandler		g_JsonusHandler;
 
 extern const sp_nativeinfo_t http_natives[];
-extern const sp_nativeinfo_t json_natives[];
 
 #endif // _INCLUDE_SOURCEMOD_EXTENSION_PROPER_H_
