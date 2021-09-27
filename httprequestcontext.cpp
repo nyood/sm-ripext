@@ -89,7 +89,7 @@ HTTPRequestContext::HTTPRequestContext(const std::string &method, const std::str
 {
 	if (data != NULL)
 	{
-		body = (char *) data->print(-1).c_str();
+		body = data->print(-1);
 		size = (body == NULL) ? 0 : strlen(body);
 	}
 }
