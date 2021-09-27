@@ -38,13 +38,13 @@ static HTTPRequest *GetRequestFromHandle(IPluginContext *pContext, Handle_t hndl
 	return request;
 }
 
-static json_t *GetJSONFromHandle(IPluginContext *pContext, Handle_t hndl)
+static IJsonus *GetJSONFromHandle(IPluginContext *pContext, Handle_t hndl)
 {
 	HandleError err;
 	HandleSecurity sec(pContext->GetIdentity(), myself->GetIdentity());
 
-	json_t *json;
-	if ((err=handlesys->ReadHandle(hndl, htJSON, &sec, (void **)&json)) != HandleError_None)
+	IJsonus *json;
+	if ((err=handlesys->ReadHandle(hndl, htJsonus, &sec, (void **)&json)) != HandleError_None)
 	{
 		pContext->ThrowNativeError("Invalid JSON handle %x (error %d)", hndl, err);
 		return NULL;
@@ -139,9 +139,9 @@ static cell_t PostRequest(IPluginContext *pContext, const cell_t *params)
 	char *endpoint;
 	pContext->LocalToString(params[2], &endpoint);
 
-	json_t *data;
+	IJsonus *data;
 	Handle_t hndlData = static_cast<Handle_t>(params[3]);
-	if ((err=handlesys->ReadHandle(hndlData, htJSON, &sec, (void **)&data)) != HandleError_None)
+	if ((err=handlesys->ReadHandle(hndlData, htJsonus, &sec, (void **)&data)) != HandleError_None)
 	{
 		return pContext->ThrowNativeError("Invalid data handle %x (error %d)", hndlData, err);
 	}
@@ -169,7 +169,7 @@ static cell_t PutRequest(IPluginContext *pContext, const cell_t *params)
 	char *endpoint;
 	pContext->LocalToString(params[2], &endpoint);
 
-	json_t *data;
+	IJsonus *data;
 	Handle_t hndlData = static_cast<Handle_t>(params[3]);
 	if ((err=handlesys->ReadHandle(hndlData, htJSON, &sec, (void **)&data)) != HandleError_None)
 	{
@@ -199,9 +199,9 @@ static cell_t PatchRequest(IPluginContext *pContext, const cell_t *params)
 	char *endpoint;
 	pContext->LocalToString(params[2], &endpoint);
 
-	json_t *data;
+	IJsonus *data;
 	Handle_t hndlData = static_cast<Handle_t>(params[3]);
-	if ((err=handlesys->ReadHandle(hndlData, htJSON, &sec, (void **)&data)) != HandleError_None)
+	if ((err=handlesys->ReadHandle(hndlData, htJsonus, &sec, (void **)&data)) != HandleError_None)
 	{
 		return pContext->ThrowNativeError("Invalid data handle %x (error %d)", hndlData, err);
 	}
@@ -625,7 +625,7 @@ static cell_t PerformPostRequest(IPluginContext *pContext, const cell_t *params)
 		return 0;
 	}
 
-	json_t *data = GetJSONFromHandle(pContext, params[2]);
+	IJsonus *data = GetJSONFromHandle(pContext, params[2]);
 	if (data == NULL)
 	{
 		return 0;
@@ -657,7 +657,7 @@ static cell_t PerformPutRequest(IPluginContext *pContext, const cell_t *params)
 		return 0;
 	}
 
-	json_t *data = GetJSONFromHandle(pContext, params[2]);
+	IJsonus *data = GetJSONFromHandle(pContext, params[2]);
 	if (data == NULL)
 	{
 		return 0;
@@ -689,7 +689,7 @@ static cell_t PerformPatchRequest(IPluginContext *pContext, const cell_t *params
 		return 0;
 	}
 
-	json_t *data = GetJSONFromHandle(pContext, params[2]);
+	IJsonus *data = GetJSONFromHandle(pContext, params[2]);
 	if (data == NULL)
 	{
 		return 0;
