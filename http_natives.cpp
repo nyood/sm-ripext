@@ -957,23 +957,17 @@ static cell_t GetResponseData(IPluginContext *pContext, const cell_t *params)
 	/* Return the same handle every time we get the HTTP response data */
 	if (response->hndlData == BAD_HANDLE)
 	{
-		try
-		{
-			if(!response->data)
-				response->data = response->data->create(response->body);
+		if(!response->data)
+			response->data = response->data->create(response->body);
 			
-			else response->data->load(response->body);
-		} catch(const std::exception& e)
-		{
-			if(response->data)
-			{
-				delete response->data;
-			}
+		else response->data->load(response->body);
 
-			pContext->ThrowNativeError(e.what());
+		if(!response->data)
+		{
+			pContext->ThrowNativeError("Invalid JSON data");
 			return BAD_HANDLE;
 		}
-
+		
 		response->hndlData = handlesys->CreateHandleEx(htJsonus, response->data, &sec, NULL, NULL);
 		if (response->hndlData == BAD_HANDLE)
 		{
