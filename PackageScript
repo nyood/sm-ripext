@@ -58,7 +58,7 @@ CopyFiles('pawn/scripting/include/ripext', 'addons/sourcemod/scripting/include/r
 #)
 # CopyFiles(builder.buildPath, 'addons/sourcemod/configs/ripext',
 #   [ 'ca-bundle.crt' ]
-)
+# )
 
 # Copy binaries.
 for cxx_task in Extension.extensions:
