@@ -171,7 +171,7 @@ static cell_t PutRequest(IPluginContext *pContext, const cell_t *params)
 
 	IJsonus *data;
 	Handle_t hndlData = static_cast<Handle_t>(params[3]);
-	if ((err=handlesys->ReadHandle(hndlData, htJSON, &sec, (void **)&data)) != HandleError_None)
+	if ((err=handlesys->ReadHandle(hndlData, htJsonus, &sec, (void **)&data)) != HandleError_None)
 	{
 		return pContext->ThrowNativeError("Invalid data handle %x (error %d)", hndlData, err);
 	}
@@ -957,18 +957,27 @@ static cell_t GetResponseData(IPluginContext *pContext, const cell_t *params)
 	/* Return the same handle every time we get the HTTP response data */
 	if (response->hndlData == BAD_HANDLE)
 	{
-		json_error_t error;
-		response->data = json_loads(response->body, 0, &error);
-		if (response->data == NULL)
+		try
 		{
-			pContext->ThrowNativeError("Invalid JSON in line %d, column %d: %s", error.line, error.column, error.text);
+			if(!response->data)
+				response->data = response->data->create(response->body);
+			
+			else response->data->load(response->body);
+		} catch(const std::exception& e)
+		{
+			if(response->data)
+			{
+				delete response->data;
+			}
+
+			pContext->ThrowNativeError(e.what());
 			return BAD_HANDLE;
 		}
 
-		response->hndlData = handlesys->CreateHandleEx(htJSON, response->data, &sec, NULL, NULL);
+		response->hndlData = handlesys->CreateHandleEx(htJsonus, response->data, &sec, NULL, NULL);
 		if (response->hndlData == BAD_HANDLE)
 		{
-			json_decref(response->data);
+			delete response->data;
 
 			pContext->ThrowNativeError("Could not create data handle.");
 			return BAD_HANDLE;
