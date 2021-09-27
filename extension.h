@@ -187,6 +187,8 @@ public:
 
 extern RipExt g_RipExt;
 
+extern IJsonus *g_pJsonus;
+
 extern HTTPClientHandler	g_HTTPClientHandler;
 extern HandleType_t			htHTTPClient;
 

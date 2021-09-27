@@ -958,7 +958,7 @@ static cell_t GetResponseData(IPluginContext *pContext, const cell_t *params)
 	if (response->hndlData == BAD_HANDLE)
 	{
 		if(!response->data)
-			response->data = response->data->create(response->body);
+			response->data = g_pJsonus->create(response->body);
 			
 		else response->data->load(response->body);
 
@@ -967,7 +967,7 @@ static cell_t GetResponseData(IPluginContext *pContext, const cell_t *params)
 			pContext->ThrowNativeError("Invalid JSON data");
 			return BAD_HANDLE;
 		}
-		
+
 		response->hndlData = handlesys->CreateHandleEx(htJsonus, response->data, &sec, NULL, NULL);
 		if (response->hndlData == BAD_HANDLE)
 		{
