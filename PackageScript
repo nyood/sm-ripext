@@ -12,7 +12,7 @@ folder_list = [
   'addons/sourcemod/scripting/include/ripext',
   #'addons/sourcemod/gamedata',
   #'addons/sourcemod/configs',
-  'addons/sourcemod/configs/ripext',
+  # 'addons/sourcemod/configs/ripext',
 ]
 
 if 'x86_64' in Extension.target_archs:
@@ -56,8 +56,8 @@ CopyFiles('pawn/scripting/include/ripext', 'addons/sourcemod/scripting/include/r
 #  'otherconfig.cfg,
 #  ]
 #)
-CopyFiles(builder.buildPath, 'addons/sourcemod/configs/ripext',
-  [ 'ca-bundle.crt' ]
+# CopyFiles(builder.buildPath, 'addons/sourcemod/configs/ripext',
+#   [ 'ca-bundle.crt' ]
 )
 
 # Copy binaries.
